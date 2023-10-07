@@ -32,16 +32,43 @@ class Player(GameSprite):
 
 run= True
 player1 = Player('raketka1.png',0,100,5,75,90)
-player2 = Player('raketka2.png',425,100,5,75,90)
+player2 = Player('raketka2.png',625,100,5,75,90)
 ball = GameSprite('vzx.png', 250,250,5,60,60)
 FPS = 60
 clock = time.Clock()
+
+speed_x = 3
+speed_y = 3
+finish = False
+font.init()
+font1 = font.Font(None, 35)
+lose1 = font1.render(
+    'Player 1 LOSE!', True, (180,0,0)
+)
+font2 = font.Font(None, 35)
+lose2 = font2.render(
+    'Player 2 LOSE!', True, (180,0,0)
+)
 while run:
     for e in event.get():
         if e.type == QUIT:
             run = False
         
-    window.blit(background, (0, 0))       
+    window.blit(background, (0, 0)) 
+    if finish != True:
+        ball.rect.x += speed_x
+        ball.rect.y += speed_y
+    if ball.rect.y > win_height-60 or ball.rect.y < 0:
+        speed_y = -1
+    if sprite.collide_rect(player1, ball) or sprite.collide_rect(player2, ball):
+        speed_x *= -1
+    if ball.rect.x < 0:
+        finish = True
+        window.blit(lose1, (200,200))
+    if ball.rect.x > win_width-50:
+        finish = True
+        window.blit(lose2, (200,200))
+      
     player1.update_L()
     player2.update_R()
     player1.reset()
